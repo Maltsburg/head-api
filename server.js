@@ -1,11 +1,10 @@
-require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const port = process.env.PORT;
+const port = 2095;
 const routesDir = path.join(__dirname, 'routes');
 const cacheDir = path.join(routesDir, 'cache');
 const head = require(path.join(routesDir, 'head.js'));
