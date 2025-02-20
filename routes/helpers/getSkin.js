@@ -1,5 +1,5 @@
 async function getSkin(username, version) {
-    const defaultSkinUrl = './stuff/steve.png';
+    const defaultSkinUrl = 'http://textures.minecraft.net/texture/60a5bd016b3c9a1b9272e4929e30827a67be4ebb219017adbbc4a4d22ebd5b1';
     try {
         if (version === 'java') {
             const uuidRes = await fetch(`https://api.mojang.com/users/profiles/minecraft/${encodeURIComponent(username)}`);

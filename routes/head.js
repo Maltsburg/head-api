@@ -8,12 +8,15 @@ const router = express.Router();
 const cacheDir = path.join(__dirname, 'cache');
 
 router.get('/:username/:size?', async (req, res) => {
-    let username = req.params.username;
-    const size = Math.min(Math.max(parseInt(req.params.size) || 32, 8), 512);
+    let { username, size } = req.params;
+    const { style } = req.query;
+
+    size = size ? Math.min(Math.max(parseInt(size), 8), 512) : 32;
+
     const version = username.startsWith('.') ? 'bedrock' : 'java';
     username = username.startsWith('.') ? username.substring(1) : username;
 
-    const cacheFilePath = path.join(cacheDir, `${username}_${size}.png`);
+    const cacheFilePath = path.join(cacheDir, `${username}_${size}_${style || 'default'}.png`);
 
     try {
 
@@ -29,7 +32,7 @@ router.get('/:username/:size?', async (req, res) => {
 
         // If not cached, go through thr process
         const skinUrl = await getSkin(username, version); // Get texture URL
-        const headCanvas = await headBuilder(skinUrl, size); // Create head
+        const headCanvas = await headBuilder(skinUrl, size, style); // Create head
         const head = headCanvas.toBuffer('image/png');
 
         fs.writeFileSync(cacheFilePath, head); // Cache it
