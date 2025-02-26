@@ -1,9 +1,9 @@
 const { createCanvas } = require('canvas');
-const {skinBuilder} = require("../skin/skinBuilder");
+const {bodyBuilder} = require("../body/bodyBuilder");
 
 async function headBuilder(username, size, style = 'default') {
     try {
-        const img = await skinBuilder(username, 1, style);
+        const img = await bodyBuilder(username, 1, style);
         const canvas = createCanvas(size, size);
         const ctx = canvas.getContext('2d');
         ctx.imageSmoothingEnabled = false;

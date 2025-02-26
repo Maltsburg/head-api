@@ -34,7 +34,7 @@ router.get('/:username/:size?', async (req, res) => {
         res.setHeader('Content-Type', 'image/png');
         res.end(head); // Serve it
     } catch (error) {
-        console.error('Error processing skin:', error);
+        console.error('Error processing body:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });

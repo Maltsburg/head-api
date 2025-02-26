@@ -2,7 +2,7 @@ const {createCanvas, loadImage} = require('canvas');
 const styles = require('../util/style');
 const {getSkin} = require("../util/getSkin");
 
-async function skinBuilder(username, scale, style) {
+async function bodyBuilder(username, scale, style) {
     try {
         const skinData = await getSkin(username)
         const img = await loadImage(skinData.url);
@@ -52,9 +52,9 @@ async function skinBuilder(username, scale, style) {
 
         return canvas;
     } catch (error) {
-        console.error('Error in skinBuilder:', error);
+        console.error('Error in bodyBuilder:', error);
         throw new Error(error.message);
     }
 }
 
-module.exports = {skinBuilder};
+module.exports = {bodyBuilder};

@@ -1,9 +1,9 @@
 const { createCanvas} = require('canvas');
-const { skinBuilder } = require("../skin/skinBuilder");
+const { bodyBuilder } = require("../body/bodyBuilder");
 
 async function bustBuilder(username, size, style = 'default') {
     try {
-        const img = await skinBuilder(username, 1, style);
+        const img = await bodyBuilder(username, 1, style);
         const scale = 16 * size
         const canvas = createCanvas(scale, scale);
         const ctx = canvas.getContext('2d');
@@ -13,7 +13,7 @@ async function bustBuilder(username, size, style = 'default') {
 
         return canvas;
     } catch (error) {
-        console.error('Error in headBuilder:', error);
+        console.error('Error in bustBuilder:', error);
         throw new Error(error.message);
     }
 }
