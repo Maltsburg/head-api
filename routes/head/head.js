@@ -1,11 +1,9 @@
 const express = require('express');
-const { getSkin } = require('./helpers/getSkin');
-const { headBuilder } = require('./helpers/headBuilder');
 const path = require('path');
 const fs = require('fs');
-
 const router = express.Router();
-const cacheDir = path.join(__dirname, 'cache');
+const cacheDir = path.join(__dirname, '../../cache', 'heads');
+const { headBuilder } = require('./headBuilder');
 
 router.get('/:username/:size?', async (req, res) => {
     let { username, size } = req.params;
@@ -13,10 +11,7 @@ router.get('/:username/:size?', async (req, res) => {
 
     size = size ? Math.min(Math.max(parseInt(size), 8), 512) : 32;
 
-    const version = username.startsWith('.') ? 'bedrock' : 'java';
-    username = username.startsWith('.') ? username.substring(1) : username;
-
-    const cacheFilePath = path.join(cacheDir, `${username}_${size}_${style || 'default'}.png`);
+    const cacheFilePath = path.join(cacheDir, `${username}.${size}.${style || 'default'}.png`);
 
     try {
 
@@ -31,8 +26,7 @@ router.get('/:username/:size?', async (req, res) => {
         }
 
         // If not cached, go through thr process
-        const skinUrl = await getSkin(username, version); // Get texture URL
-        const headCanvas = await headBuilder(skinUrl, size, style); // Create head
+        const headCanvas = await headBuilder(username, size, style); // Create head
         const head = headCanvas.toBuffer('image/png');
 
         fs.writeFileSync(cacheFilePath, head); // Cache it
