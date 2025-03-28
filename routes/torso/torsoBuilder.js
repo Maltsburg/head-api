@@ -1,7 +1,7 @@
 const { createCanvas} = require('canvas');
 const { bodyBuilder } = require("../body/bodyBuilder");
 
-async function bustBuilder(username, size, style = 'default') {
+async function torsoBuilder(username, size, style = 'default') {
     try {
         const img = await bodyBuilder(username, 1, style);
         const scale = 16 * size
@@ -13,9 +13,9 @@ async function bustBuilder(username, size, style = 'default') {
 
         return canvas;
     } catch (error) {
-        console.error('Error in bustBuilder:', error);
+        console.error('Error in torsoBuilder:', error);
         throw new Error(error.message);
     }
 }
 
-module.exports = { bustBuilder };
+module.exports = { torsoBuilder };

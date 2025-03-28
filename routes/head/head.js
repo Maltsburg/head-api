@@ -3,11 +3,18 @@ const path = require('path');
 const fs = require('fs');
 const router = express.Router();
 const cacheDir = path.join(__dirname, '../../cache', 'heads');
-const { headBuilder } = require('./headBuilder');
+const {headBuilder} = require('./headBuilder');
 
-router.get('/:username/:size?', async (req, res) => {
-    let { username, size } = req.params;
-    const { style } = req.query;
+const headGrabber = path.join(__dirname, '../../pages/headgrabber');
+
+router.use(express.static(headGrabber));
+
+router.get('/', (req, res) => {
+    res.sendFile(path.join(headGrabber, 'head.html'));
+});
+
+router.get('/:username/:size?/:style?', async (req, res) => {
+    let {username, size, style} = req.params;
 
     size = size ? Math.min(Math.max(parseInt(size), 8), 512) : 32;
 
@@ -35,7 +42,7 @@ router.get('/:username/:size?', async (req, res) => {
         res.end(head); // Serve it
     } catch (error) {
         console.error('Error processing body:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json({error: 'Internal Server Error'});
     }
 });
 

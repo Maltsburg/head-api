@@ -2,12 +2,11 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const router = express.Router();
-const cacheDir = path.join(__dirname, '../../cache', 'bust');
-const { bustBuilder } = require('./bustBuilder');
+const cacheDir = path.join(__dirname, '../../cache', 'torso');
+const { torsoBuilder } = require('./torsoBuilder');
 
-router.get('/:username/:scale?', async (req, res) => {
-    let { username, scale } = req.params;
-    const { style } = req.query;
+router.get('/:username/:scale?/:style?', async (req, res) => {
+    let { username, scale, style } = req.params;
 
     scale = scale ? Math.min(Math.max(parseInt(scale), 4), 64) : 16;
 
@@ -26,7 +25,7 @@ router.get('/:username/:scale?', async (req, res) => {
         }
 
         // If not cached, go through thr process
-        const headCanvas = await bustBuilder(username, scale, style); // Create bust
+        const headCanvas = await torsoBuilder(username, scale, style); // Create torso
         const head = headCanvas.toBuffer('image/png');
 
         fs.writeFileSync(cacheFilePath, head); // Cache it

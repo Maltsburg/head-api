@@ -1,10 +1,10 @@
 const {createCanvas, loadImage} = require('canvas');
 const styles = require('../util/style');
-const {getSkin} = require("../util/getSkin");
+const {getSkinURL} = require("../util/getSkinURL");
 
 async function bodyBuilder(username, scale, style) {
     try {
-        const skinData = await getSkin(username)
+        const skinData = await getSkinURL(username)
         const img = await loadImage(skinData.url);
         const canvas = createCanvas(16 * scale, 32 * scale);
         const ctx = canvas.getContext('2d');

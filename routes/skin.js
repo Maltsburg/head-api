@@ -1,18 +1,17 @@
 const express = require('express');
-const {bodyBuilder} = require('./bodyBuilder');
+const {createCanvas, loadImage} = require('canvas');
 const path = require('path');
 const fs = require('fs');
+const {getSkinURL} = require("./util/getSkinURL");
 
-const cacheDir = path.join(__dirname, '../../cache', 'body');
+const cacheDir = path.join(__dirname, '../cache', 'skins');
 
 const router = express.Router();
 
-router.get('/:username/:scale?/:style?', async (req, res) => {
-    let {username, scale, style} = req.params;
+router.get('/:username*', async (req, res) => {
+    let {username} = req.params;
 
-    scale = scale ? Math.min(Math.max(parseInt(scale), 1), 64) : 16;
-
-    const cacheFilePath = path.join(cacheDir, `${username}.${scale}.${style || 'default'}.png`);
+    const cacheFilePath = path.join(cacheDir, `${username}.png`);
 
     try {
         // Create the folder since it will be deleted on startup
@@ -20,13 +19,20 @@ router.get('/:username/:scale?/:style?', async (req, res) => {
             fs.mkdirSync(cacheDir);
         }
 
-        // Check if the body is cached
+        // Check if the skin is cached
         if (fs.existsSync(cacheFilePath)) {
             return res.sendFile(cacheFilePath);
         }
 
-        const skinCanvas = await bodyBuilder(username, scale, style); // Create body
-        const skin = skinCanvas.toBuffer('image/png');
+        const skinData = await getSkinURL(username)
+        const img = await loadImage(skinData.url);
+
+        const canvas = createCanvas(img.width, img.height);
+        const ctx = canvas.getContext('2d');
+
+        ctx.drawImage(img, 0, 0);
+
+        const skin = canvas.toBuffer('image/png');
 
         fs.writeFileSync(cacheFilePath, skin); // Cache it
 

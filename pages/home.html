@@ -1,0 +1,90 @@
+<html lang="en">
+<head>
+    <link rel="icon" href="/head/IndiaPaleAle/64">
+    <meta name="theme-color" content="#814bbe">
+    <title>Maltsburg</title>
+</head>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to bottom, #814bbe, #90809e);
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        flex-direction: column;
+    }
+
+    #hey {
+        z-index: 1;
+    }
+
+    h1 {
+        font-size: 14em;
+        color: aliceblue;
+        text-transform: uppercase;
+    }
+
+    #links {
+        animation: fadeIn 1s ease-in-out forwards;
+        z-index: 1;
+        font-size: 32px;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    img, #hey {
+        animation: fadeIn 1s ease-in-out forwards;
+    }
+</style>
+
+<body>
+<div id="hey">
+    <h1>HEY!</h1>
+</div>
+<div id="links"><a href="/head">HeadGrabber</a></div>
+
+<script>
+    const heads = ["indiapaleale", "mahoose", "joethahobo", "akoot_", "bee143", "crateofboxes", "500am", "prince_rat", "viscalis", "xanxus542"];
+    heads.forEach(name => {
+        const img = document.createElement("img");
+        img.src = `/head/${name}/64`;
+        img.style.position = "absolute";
+        document.body.appendChild(img);
+
+        img.onload = function() {
+
+            let x = Math.random() * (window.innerWidth - img.width);
+            let y = Math.random() * (window.innerHeight - img.height);
+
+            let dx = 3, dy = 3;
+
+            function move() {
+                x += dx;
+                y += dy;
+
+                // Bounce the image off the edges
+                if (x < 0 || x + img.width > window.innerWidth) dx = -dx;
+                if (y < 0 || y + img.height > window.innerHeight) dy = -dy;
+
+                img.style.left = x + "px";
+                img.style.top = y + "px";
+
+                requestAnimationFrame(move);
+            }
+
+            move();
+        }
+    });
+</script>
+</body>
+</html>

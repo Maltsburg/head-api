@@ -1,0 +1,190 @@
+/* Define font-face */
+@font-face {
+    font-family: 'MinecraftFont';
+    src: url('MC.otf') format('opentype');
+}
+
+@media screen and (max-width: 768px) {
+    .page {
+        overflow: hidden;
+    }
+
+    #displayText {
+        font-size: 12px !important;
+        left: 80% !important;
+        margin-top: 1%;
+        right: auto !important;
+    }
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to bottom, #814bbe, #90809e);
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    opacity: 0;
+    animation: fadeIn 1s ease-in forwards;
+    user-select: none;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.page {
+    position: relative;
+    max-width: 800px;
+    padding: 20px;
+    text-align: center;
+}
+
+#logo {
+    margin-bottom: -15px;
+    width: 100%;
+    height: auto;
+    margin-right: 10px;
+}
+
+.Input {
+    margin-bottom: 20px;
+}
+
+::placeholder {
+    color: #9b9b9b;
+}
+
+input[type="text"], select {
+    font-family: 'MinecraftFont', Arial, sans-serif;
+    width: 30%; 
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #966de0;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+    text-align: center;
+    background-color: rgba(88, 29, 29, 0.2);
+    color: #fff;
+    position: relative; 
+    z-index: 1;
+}
+
+input[type="text"]:focus, select:focus {
+    outline: none;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+select {
+    text-align: center;
+    font-family: 'MinecraftFont', Arial, sans-serif;
+    width: 15%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #966de0;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+    background-color: rgba(88, 29, 29, 0.2);
+    color: rgb(230, 225, 225);
+    cursor: pointer;
+}
+
+select:focus {
+    outline: none;
+    background-color: rgba(0, 0, 0, .5);
+}
+
+.headbtn {
+    margin-top: -10px;
+    margin-bottom: 20px;
+}
+
+@keyframes breathe {
+    0% {
+        transform: translate(-50%, -50%) rotate(-15deg) scale(1);
+    }
+    100% {
+        transform: translate(-50%, -50%) rotate(-15deg) scale(1.1);
+    }
+}
+
+
+button {
+    font-family: 'MinecraftFont', Arial, sans-serif;
+    background-color: #61347a;
+    color: rgb(230, 225, 225);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #238557;
+}
+
+#result > img {
+    width: 256px;
+    height: 256px;
+    image-rendering: pixelated;
+}
+
+#download, #result {
+    font-family: 'MinecraftFont', Arial, sans-serif;
+    margin: 20px;
+    color: rgb(204, 204, 204);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, .4);
+}
+
+#name {
+    font-size: 40px;
+    font-family: 'MinecraftFont', Arial, sans-serif;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, .4);
+}
+
+a#link {
+    font-size: 12px;
+    color: #5d0881;
+    text-decoration: none;
+}
+
+a#link:hover {
+    text-decoration: underline;
+    color: #48aca7;
+}
+
+#displayText {
+    font-family: 'MinecraftFont', Arial, sans-serif;
+    animation: breathe 0.3s infinite alternate-reverse;
+    white-space: nowrap;
+    position: relative;
+    left: 95%;
+    top: -20px;
+    font-size: 22px;
+    color: #FFFF55;
+    text-shadow: 2px 2px 4px rgb(0, 0, 0);
+}
+
+
+  
+  @keyframes breathe {
+    0% {
+      transform: translate(-50%, -50%) rotate(-15deg) scale(1);
+    }
+    100% {
+      transform: translate(-50%, -50%) rotate(-15deg) scale(1.1);
+    }
+  }

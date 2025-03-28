@@ -7,10 +7,8 @@ const cacheDir = path.join(__dirname, '../../cache', 'plush');
 
 const router = express.Router();
 
-router.get('/:username', async (req, res) => {
-    let { username } = req.params;
-    const { style } = req.query;
-
+router.get('/:username/:style?', async (req, res) => {
+    let { username, style  } = req.params;
 
     const cacheFilePath = path.join(cacheDir, `${username}.${style || 'default'}.png`);
 

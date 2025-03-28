@@ -1,4 +1,4 @@
-async function getSkin(username) {
+async function getSkinURL(username) {
 
     const defaultSkin = { url: 'http://textures.minecraft.net/texture/60a5bd016b3c9a1b9272e4929e30827a67be4ebb219017adbbc4a4d22ebd5b1', model: "classic" };
     try {
@@ -37,9 +37,9 @@ async function getSkin(username) {
 
         return defaultSkin;
     } catch (error) {
-        console.error('Error in getSkin:', error);
+        console.error('Error in getSkinURL:', error);
         return defaultSkin;
     }
 }
 
-module.exports = { getSkin };
+module.exports = { getSkinURL };
