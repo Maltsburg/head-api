@@ -4,6 +4,8 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.*
@@ -20,18 +22,23 @@ object Util {
 
     fun java(name: String): Pair<String, String> {
         return runBlocking {
-            val pInfo: JsonObject = // get uuid
-                client.get("https://api.mojang.com/users/profiles/minecraft/${name}").body()
+            // get player info
+            val pInfoResponse: HttpResponse =
+                client.get("https://api.mojang.com/users/profiles/minecraft/${name}")
+            if (pInfoResponse.status != HttpStatusCode.OK) return@runBlocking Pair(defaultSkin, "classic")
+            val pInfo: JsonObject = pInfoResponse.body()
 
-            val profile: JsonObject = // get player profile
-                client.get("https://sessionserver.mojang.com/session/minecraft/profile/${pInfo["id"]?.clean}").body()
+            // get player profile
+            val profileResponse: HttpResponse =
+                client.get("https://sessionserver.mojang.com/session/minecraft/profile/${pInfo["id"]?.clean}")
+            if (profileResponse.status != HttpStatusCode.OK) return@runBlocking Pair(defaultSkin, "classic")
+            val profile: JsonObject = profileResponse.body()
 
             // get the encoded textures
             val textures = profile["properties"]?.get("value")
             val skinInfo = Base64.getDecoder().decode(textures).decodeToString()
-
-            //convert string back to json
             val decodedJson: JsonObject = Json.parseToJsonElement(skinInfo).jsonObject
+
             val skinData = decodedJson["textures"]?.jsonObject
                 ?.get("SKIN")?.jsonObject
 
@@ -48,15 +55,18 @@ object Util {
 
     fun bedrock(name: String): Pair<String, String> {
         return runBlocking {
-            val pInfo: JsonObject = // get xuid
-                client.get("https://api.geysermc.org/v2/xbox/xuid/${name}").body()
+            // get player info
+            val pInfoResponse: HttpResponse = client.get("https://api.geysermc.org/v2/xbox/xuid/${name}")
+            if (pInfoResponse.status != HttpStatusCode.OK) return@runBlocking Pair(defaultSkin, "classic")
+            val pInfo: JsonObject = pInfoResponse.body()
 
-            val profile: JsonObject = // get skin info
-                client.get("https://api.geysermc.org/v2/skin/${pInfo["xuid"]?.clean}").body()
+            // get player skin
+            val profileResponse: HttpResponse = client.get("https://api.geysermc.org/v2/skin/${pInfo["xuid"]?.clean}")
+            if (profileResponse.status != HttpStatusCode.OK) return@runBlocking Pair(defaultSkin, "classic")
+            val profile: JsonObject = profileResponse.body() // get skin info
 
             val url = "http://textures.minecraft.net/texture/${profile["texture_id"]?.clean ?: defaultID}"
-
-            val model = if (profile["is_steve"]?.clean == "true")
+            val model = if (profile["is_steve"]?.clean == "true" || profile["is_steve"] == null)
                 "classic" else "slim"
 
             Pair(url, model)
