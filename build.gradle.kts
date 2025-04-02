@@ -11,7 +11,7 @@ application {
     mainClass = "io.ktor.server.netty.EngineMain"
 
     val isDevelopment: Boolean = project.ext.has("development")
-    applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
+    applicationDefaultJvmArgs = listOf("-Dproject.version=${project.version}","-Dio.ktor.development=$isDevelopment")
 }
 
 repositories {
@@ -28,6 +28,8 @@ dependencies {
 
     implementation("io.ktor:ktor-client-content-negotiation:$ktor")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor")
+
+    implementation("org.openjfx:javafx-controls:17.0.2")
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.netty)
     implementation(libs.logback.classic)

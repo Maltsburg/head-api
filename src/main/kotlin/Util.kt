@@ -9,31 +9,36 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.*
-import java.util.Base64
+import java.util.*
 
 object Util {
-
-    private val defaultID = "60a5bd016b3c9a1b9272e4929e30827a67be4ebb219017adbbc4a4d22ebd5b1"
-    private val defaultSkin = "http://textures.minecraft.net/texture/${defaultID}"
-
-    private val JsonElement.clean: String get() = this.jsonPrimitive.content
-    private fun JsonElement.get(key: String): String? = this.jsonArray[0].jsonObject[key]?.clean
     private val client = HttpClient { install(ContentNegotiation) { json() } }
+    private val JsonElement.clean: String get() = this.jsonPrimitive.content
+    fun JsonElement.get(key: String): String? = this.jsonArray[0].jsonObject[key]?.clean
 
-    fun java(name: String): Pair<String, String> {
+    private const val DEFAULTID = "60a5bd016b3c9a1b9272e4929e30827a67be4ebb219017adbbc4a4d22ebd5b1"
+    private const val DEFAULTSKIN = "http://textures.minecraft.net/texture/$DEFAULTID"
+
+    val String.skin: Pair<ByteArray, String>
+        get() = if (this.startsWith(".")) bedrock(this.substring(1)) else java(this)
+
+    private fun java(name: String): Pair<ByteArray, String> {
         return runBlocking {
             // get player info
             val pInfoResponse: HttpResponse =
-                client.get("https://api.mojang.com/users/profiles/minecraft/${name}")
-            if (pInfoResponse.status != HttpStatusCode.OK) return@runBlocking Pair(defaultSkin, "classic")
+                client.get("https://api.mojang.com/users/profiles/minecraft/$name")
+
+            if (pInfoResponse.status != HttpStatusCode.OK) return@runBlocking Pair(client.get(DEFAULTSKIN).readRawBytes(), "classic")
+
             val pInfo: JsonObject = pInfoResponse.body()
 
             // get player profile
             val profileResponse: HttpResponse =
                 client.get("https://sessionserver.mojang.com/session/minecraft/profile/${pInfo["id"]?.clean}")
-            if (profileResponse.status != HttpStatusCode.OK) return@runBlocking Pair(defaultSkin, "classic")
-            val profile: JsonObject = profileResponse.body()
 
+            if (profileResponse.status != HttpStatusCode.OK) return@runBlocking Pair(client.get(DEFAULTSKIN).readRawBytes(), "classic")
+
+            val profile: JsonObject = profileResponse.body()
             // get the encoded textures
             val textures = profile["properties"]?.get("value")
             val skinInfo = Base64.getDecoder().decode(textures).decodeToString()
@@ -43,33 +48,36 @@ object Util {
                 ?.get("SKIN")?.jsonObject
 
             val url = skinData
-                ?.get("url")?.clean ?: defaultSkin
+                ?.get("url")?.clean ?: DEFAULTSKIN
 
             val model = skinData
                 ?.get("metadata")?.jsonObject
                 ?.get("model")?.clean ?: "classic"
 
-            Pair(url, model)
+            Pair(client.get(url).readRawBytes(), model)
         }
     }
 
-    fun bedrock(name: String): Pair<String, String> {
+    private fun bedrock(name: String): Pair<ByteArray, String> {
         return runBlocking {
             // get player info
-            val pInfoResponse: HttpResponse = client.get("https://api.geysermc.org/v2/xbox/xuid/${name}")
-            if (pInfoResponse.status != HttpStatusCode.OK) return@runBlocking Pair(defaultSkin, "classic")
-            val pInfo: JsonObject = pInfoResponse.body()
+            val pInfoResponse: HttpResponse = client.get("https://api.geysermc.org/v2/xbox/xuid/$name")
 
+            if (pInfoResponse.status != HttpStatusCode.OK) return@runBlocking Pair(client.get(DEFAULTSKIN).readRawBytes(), "classic")
+
+            val pInfo: JsonObject = pInfoResponse.body()
             // get player skin
             val profileResponse: HttpResponse = client.get("https://api.geysermc.org/v2/skin/${pInfo["xuid"]?.clean}")
-            if (profileResponse.status != HttpStatusCode.OK) return@runBlocking Pair(defaultSkin, "classic")
+
+            if (profileResponse.status != HttpStatusCode.OK) return@runBlocking Pair(client.get(DEFAULTSKIN).readRawBytes(), "classic")
+
             val profile: JsonObject = profileResponse.body() // get skin info
 
-            val url = "http://textures.minecraft.net/texture/${profile["texture_id"]?.clean ?: defaultID}"
+            val url = "http://textures.minecraft.net/texture/${profile["texture_id"]?.clean ?: DEFAULTID}"
             val model = if (profile["is_steve"]?.clean == "true" || profile["is_steve"] == null)
                 "classic" else "slim"
 
-            Pair(url, model)
+            Pair(client.get(url).readRawBytes(), model)
         }
     }
 }
