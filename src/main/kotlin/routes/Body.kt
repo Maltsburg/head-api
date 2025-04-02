@@ -1,5 +1,6 @@
 package com.maltsburg.routes
 
+import com.maltsburg.ImgUtil.cache
 import com.maltsburg.ImgUtil.scaleImage
 import com.maltsburg.Util.skin
 import io.ktor.http.*
@@ -7,7 +8,6 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import java.awt.Graphics2D
 import java.awt.image.BufferedImage
-import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import javax.imageio.ImageIO
 
@@ -25,7 +25,7 @@ fun Route.body() {
 
 fun bodyBuilder(username: String, scale: Int = 1): ByteArray {
     try {
-        val img = ImageIO.read(ByteArrayInputStream(username.skin.first))
+        val img = cache(username) // cache process
 
         // create canvas
         val canvas = BufferedImage(16, 32, BufferedImage.TYPE_INT_ARGB)
@@ -62,10 +62,10 @@ fun bodyBuilder(username: String, scale: Int = 1): ByteArray {
 
         g.dispose()
 
-        val byteArrayOutputStream = ByteArrayOutputStream()
-        ImageIO.write(scaleImage(canvas, scale), "PNG", byteArrayOutputStream)
+        val array = ByteArrayOutputStream()
+        ImageIO.write(scaleImage(canvas, scale), "PNG", array)
 
-        return byteArrayOutputStream.toByteArray()
+        return array.toByteArray()
     } catch (e: Exception) {
         println("Error in bodyBuilder: ${e.message}")
         throw RuntimeException(e.message)
