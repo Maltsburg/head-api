@@ -19,11 +19,12 @@ fun Application.module() {
 }
 
 fun Application.configureRouting() {
-    val projectVersion = System.getProperty("project.version")
     // delete cache folder on launch
     launch { File("skins").deleteRecursively() }
     routing {
-        get("/") { call.respondText("API Version: $projectVersion") }
+        get("/") {
+            call.respondText("API Version: ${System.getProperty("project.version")}")
+        }
         skin()
         body()
         torso()

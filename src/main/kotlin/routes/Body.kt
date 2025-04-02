@@ -27,7 +27,9 @@ fun bodyBuilder(username: String, scale: Int = 1): ByteArray {
     try {
         val img = cache(username) // cache process
 
-        // create canvas
+        // deal with the boomer layout
+        if (img.height == 32) return oldSkin(img, scale)
+
         val canvas = BufferedImage(16, 32, BufferedImage.TYPE_INT_ARGB)
         val g: Graphics2D = canvas.createGraphics()
 
@@ -59,6 +61,36 @@ fun bodyBuilder(username: String, scale: Int = 1): ByteArray {
         g.drawImage(img, 12, 8, rArm, 20, 36, 52, 40, 64, null)
         // Right Arm layer
         g.drawImage(img, 12, 8, rArm, 20, 52, 52, 56, 64, null)
+
+        g.dispose()
+
+        val array = ByteArrayOutputStream()
+        ImageIO.write(scaleImage(canvas, scale), "PNG", array)
+
+        return array.toByteArray()
+    } catch (e: Exception) {
+        println("Error in bodyBuilder: ${e.message}")
+        throw RuntimeException(e.message)
+    }
+}
+
+fun oldSkin(img: BufferedImage, scale: Int): ByteArray {
+    try {
+        val canvas = BufferedImage(16, 32, BufferedImage.TYPE_INT_ARGB)
+        val g: Graphics2D = canvas.createGraphics()
+
+        // Head
+        g.drawImage(img, 4, 0, 12, 8, 8, 8, 16, 16, null)
+        // Body
+        g.drawImage(img, 4, 8, 12, 20, 20, 20, 28, 32, null)
+        // Left Leg
+        g.drawImage(img, 4, 20, 8, 32, 4, 20, 8, 32, null)
+        // Right Leg
+        g.drawImage(img, 8, 20, 12, 32, 4, 20, 8, 32, null)
+        // Left Arm
+        g.drawImage(img, 0, 8, 4, 20, 44, 20, 48, 32, null)
+        // Right Arm (left arm flipped)
+        g.drawImage(img, 16, 8, 12, 20, 44, 20, 48, 32, null)
 
         g.dispose()
 
