@@ -44,7 +44,7 @@ fun bodyBuilder(username: String, scale: Int = 1): ByteArray {
         // Body
         g.drawImage(img, 4, 8, 12, 20, 20, 20, 28, 32, null)
         // Body layer
-        g.drawImage(img, 4, 8, 12, 12, 20, 36, 28, 48, null)
+        g.drawImage(img, 4, 8, 12, 20, 20, 36, 28, 48, null)
         // Left Leg
         g.drawImage(img, 4, 20, 8, 32, 4, 20, 8, 32, null)
         // Left Leg layer
@@ -81,6 +81,8 @@ fun oldSkin(img: BufferedImage, scale: Int): ByteArray {
 
         // Head
         g.drawImage(img, 4, 0, 12, 8, 8, 8, 16, 16, null)
+        // Head layer
+        g.drawImage(img, 4, 0, 12, 8, 40, 8, 48, 16, null)
         // Body
         g.drawImage(img, 4, 8, 12, 20, 20, 20, 28, 32, null)
         // Left Leg

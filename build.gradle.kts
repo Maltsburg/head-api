@@ -22,7 +22,6 @@ val ktor: String by project
 
 dependencies {
     implementation("io.ktor:ktor-server-html-builder:$ktor")
-    implementation("org.jetbrains.kotlin-wrappers:kotlin-css:1.0.0-pre.625")
     implementation("io.ktor:ktor-client-core:$ktor")
     implementation("io.ktor:ktor-client-cio:$ktor")
 
@@ -34,4 +33,5 @@ dependencies {
     implementation(libs.ktor.server.netty)
     implementation(libs.logback.classic)
     implementation(libs.ktor.server.config.yaml)
+    implementation("io.github.allangomes:kotlinwind-css:0.1.0")
 }
